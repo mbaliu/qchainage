@@ -13,3 +13,8 @@ QChainage can:
 - force adding an endpoint to the line
 
 Resulting layer is currently a "memory layer" which can be exported by the "save as" function to any vector format.
+
+=================
+This plugin was changed for a specifc demand.
+1. Now it not create the first and de last point on the line
+2. The number of points (number os parts + 1) is define by the <id> field
