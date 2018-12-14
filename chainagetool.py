@@ -48,7 +48,8 @@ def create_points_at(startpoint,
                      fid,
                      force,
                      fo_fila,
-                     divide):
+                     divide,
+                     feature):
     """Creating Points at coordinates along the line
     """
     # don't allow distance to be zero and loop endlessly
@@ -63,6 +64,7 @@ def create_points_at(startpoint,
     if length < endpoint:
         endpoint = length
 
+    divide = int(feature['id'])+1
     if divide > 0:
         length2 = length
         if startpoint > 0:
@@ -77,6 +79,7 @@ def create_points_at(startpoint,
         current_distance = distance
 
     feats = []
+    fid = 1
 
     if endpoint > 0:
         length = endpoint
@@ -93,14 +96,14 @@ def create_points_at(startpoint,
     fields.append(field_id)
     fields.append(field)
 
-    feature = QgsFeature(fields)
-    feature['dist'] = startpoint
-    feature['id'] = fid
+    # feature = QgsFeature(fields)
+    # feature['dist'] = startpoint
+    # feature['id'] = fid
 
-    feature.setGeometry(point)
-    feats.append(feature)
+    # feature.setGeometry(point)
+    # feats.append(feature)
 
-    while startpoint + current_distance <= length:
+    while startpoint + current_distance < length:
         # Get a point along the line at the current distance
         point = geom.interpolate(startpoint + current_distance)
         # Create a new QgsFeature and assign it the new geometry
@@ -111,16 +114,17 @@ def create_points_at(startpoint,
         feats.append(feature)
         # Increase the distance
         current_distance = current_distance + distance
+        fid += 1
 
     # set the last point at endpoint if wanted
-    if force is True:
-        end = geom.length()
-        point = geom.interpolate(end)
-        feature = QgsFeature(fields)
-        feature['dist'] = end
-        feature['id'] = fid
-        feature.setGeometry(point)
-        feats.append(feature)
+    # if force is True:
+    #     end = geom.length()
+    #     point = geom.interpolate(end)
+    #     feature = QgsFeature(fields)
+    #     feature['dist'] = end
+    #     feature['id'] = fid
+    #     feature.setGeometry(point)
+    #     feats.append(feature)
     return feats
 
 
@@ -212,7 +216,8 @@ def points_along_line(layerout,
                                     fid,
                                     force,
                                     fo_fila,
-                                    divide)
+                                    divide,
+                                    feature)
         provider.addFeatures(features)
         virt_layer.updateExtents()
 
